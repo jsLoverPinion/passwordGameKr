@@ -8,7 +8,30 @@ import { useEffect } from "react";
 function App() {
   const { value, setValue } = useBearStore();
 
-  function updateValue(params) {}
+  let rulebook = [
+    {
+      RuleExplanation: "첫번째 조건입니다.",
+      complited: false,
+      condition: () => {
+        if (value.lenth >= 5) {
+          console.log("인풋값 5이상이다");
+        }
+      },
+    },
+    {
+      RuleExplanation: "나는 두번째조건이여 허허",
+      complited: true,
+      condition: () => {
+        if (value.lenth >= 5) {
+          console.log("인풋값 5이상이다");
+        }
+      },
+    },
+  ];
+
+  if (value.lenth >= 5) {
+    console.log("인풋값 5이상이다");
+  }
 
   useEffect(() => {
     console.log(`입력감지됨 값 = ${value}`);
@@ -17,7 +40,7 @@ function App() {
   return (
     <div className="App">
       <BackGround>
-        <Title>비밀번호 게임</Title>
+        <Title>🔒비밀번호 게임</Title>
         <Explanation>비밀번호를 입력해주세요</Explanation>
         <PWinput
           type="text"
@@ -27,7 +50,9 @@ function App() {
           }}
         />
         <Container>
-          <Rule value={value}></Rule>
+          {rulebook.map((data, idx) => (
+            <Rule ruleData={data} idx={idx} />
+          ))}
         </Container>
       </BackGround>
     </div>
@@ -48,7 +73,6 @@ const BackGround = styled.div`
 const Container = styled.div`
   width: 500px;
   height: 100px;
-  outline: 1px solid #b1b1b1b1;
   margin-top: 20px;
 `;
 const Title = styled.h1`
