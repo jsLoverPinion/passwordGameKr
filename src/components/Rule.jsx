@@ -1,24 +1,22 @@
 import styled from "styled-components";
-import imgObj from "./data/img";
-import useBearStore from "./store";
+import imgObj from "../data/img";
+import useBearStore from "../store";
 // import rulebook from "./data/ruleBook";
 
 const { value, setValue } = useBearStore;
 
 const Rule = (props) => {
+  const condition = props.ruleData.condition();
   return (
     <>
       <Container
-        backcol={props.ruleData.complited === true ? "#e3ffe3" : "#ffecec"}
-        outccol={props.ruleData.complited === true ? "green" : "#d10000"}
+        backcol={condition === true ? "#e3ffe3" : "#ffecec"}
+        outccol={condition === true ? "green" : "#d10000"}
+        showable={props.show === true ? "flex" : "none"}
       >
-        <Bulean
-          backcol={props.ruleData.complited === true ? "#aef3ae" : "#ffc7c7"}
-        >
-          <CheckIcon>
-            {props.ruleData.complited === true ? "✔️" : "❗"}
-          </CheckIcon>
-          <RuleNumber>{`조건${props.idx + 1}`}</RuleNumber>
+        <Bulean backcol={condition === true ? "#aef3ae" : "#ffc7c7"}>
+          <CheckIcon>{condition === true ? "✔️" : "❗"}</CheckIcon>
+          <RuleNumber>{`조건${props.ruleData.order}`}</RuleNumber>
         </Bulean>
         <RuleExplanation>{props.ruleData.RuleExplanation}</RuleExplanation>
       </Container>
@@ -35,9 +33,10 @@ const Container = styled.div`
   outline: ${(props) => props.outccol} 1px solid;
   background-color: ${(props) => props.backcol};
   justify-content: start;
-  display: flex;
+  display: ${(props) => props.showable};
   flex-flow: wrap;
   margin-top: 20px;
+  box-shadow: 4px 4px 10px 1px #b1b1b1b1;
 `;
 
 const Bulean = styled.div`

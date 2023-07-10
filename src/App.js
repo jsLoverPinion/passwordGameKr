@@ -1,37 +1,49 @@
 import "normalize.css";
 import styled from "styled-components";
 import "./App.css";
-import Rule from "./Rule";
+import Rule from "./components/Rule";
 import useBearStore from "./store";
 import { useEffect } from "react";
 
 function App() {
   const { value, setValue } = useBearStore();
-
-  let rulebook = [
+  const random = Math.floor(Math.random() * 11) + 10;
+  const rulebook = [
     {
-      RuleExplanation: "첫번째 조건입니다.",
-      complited: false,
-      condition: () => {
-        if (value.lenth >= 5) {
-          console.log("인풋값 5이상이다");
-        }
-      },
+      order: "4",
+      RuleExplanation: `비밀번호의 숫자의 합은 12여야합니다`,
+      condition: () =>
+        Array.from(value.matchAll(/\d/g)).reduce(
+          (acc, match) => acc + Number(match[0]),
+          0
+        ) === 12
+          ? true
+          : false,
     },
     {
-      RuleExplanation: "나는 두번째조건이여 허허",
-      complited: true,
-      condition: () => {
-        if (value.lenth >= 5) {
-          console.log("인풋값 5이상이다");
-        }
-      },
+      order: "3",
+      RuleExplanation: "비밀번호는 특수기호를 포함해야합니다.",
+      condition: () => (/[\W_]/.test(value) ? true : false),
+    },
+    {
+      order: "2",
+      RuleExplanation: "비밀번호는 숫자를 포함해야합니다.",
+      condition: () => (/\d/.test(value) ? true : false),
+      // rulebook[this.order - 2].condition === true ? true : false,
+    },
+    {
+      order: "1",
+      RuleExplanation: "비밀번호는 8글자 이상이여야합니다.",
+      condition: () => (value.length >= 8 ? true : false),
     },
   ];
 
-  if (value.lenth >= 5) {
-    console.log("인풋값 5이상이다");
-  }
+  const showable = [
+    rulebook[1].condition() === true ? true : false,
+    rulebook[2].condition() === true ? true : false,
+    rulebook[3].condition() === true ? true : false,
+    true,
+  ];
 
   useEffect(() => {
     console.log(`입력감지됨 값 = ${value}`);
@@ -51,7 +63,7 @@ function App() {
         />
         <Container>
           {rulebook.map((data, idx) => (
-            <Rule ruleData={data} idx={idx} />
+            <Rule show={showable[idx]} ruleData={data} />
           ))}
         </Container>
       </BackGround>
@@ -63,7 +75,7 @@ export default App;
 
 const BackGround = styled.div`
   width: 100vw;
-  height: 100vh;
+  height: 300vh;
   background-color: #fffae9;
   display: flex;
   align-items: center;
