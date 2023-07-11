@@ -3,15 +3,27 @@ import styled from "styled-components";
 import "./App.css";
 import Rule from "./components/Rule";
 import useBearStore from "./store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
+  //
   const { value, setValue } = useBearStore();
-  const random = Math.floor(Math.random() * 11) + 10;
+
   const rulebook = [
     {
-      order: "4",
-      RuleExplanation: `비밀번호의 숫자의 합은 12여야합니다`,
+      RuleExplanation: "비밀번호는 8글자 이상이여야합니다.",
+      condition: () => (value.length >= 8 ? true : false),
+    },
+    {
+      RuleExplanation: "비밀번호는 숫자를 포함해야합니다.",
+      condition: () => (/\d/.test(value) ? true : false),
+    },
+    {
+      RuleExplanation: "비밀번호는 특수기호를 포함해야합니다.",
+      condition: () => (/[\W_]/.test(value) ? true : false),
+    },
+    {
+      RuleExplanation: `비밀번호의 숫자의 합은 ${12}여야합니다`,
       condition: () =>
         Array.from(value.matchAll(/\d/g)).reduce(
           (acc, match) => acc + Number(match[0]),
@@ -20,50 +32,36 @@ function App() {
           ? true
           : false,
     },
-    {
-      order: "3",
-      RuleExplanation: "비밀번호는 특수기호를 포함해야합니다.",
-      condition: () => (/[\W_]/.test(value) ? true : false),
-    },
-    {
-      order: "2",
-      RuleExplanation: "비밀번호는 숫자를 포함해야합니다.",
-      condition: () => (/\d/.test(value) ? true : false),
-      // rulebook[this.order - 2].condition === true ? true : false,
-    },
-    {
-      order: "1",
-      RuleExplanation: "비밀번호는 8글자 이상이여야합니다.",
-      condition: () => (value.length >= 8 ? true : false),
-    },
   ];
 
-  const showable = [
+  const showAble = [
+    true,
+    rulebook[0].condition() === true ? true : false,
     rulebook[1].condition() === true ? true : false,
     rulebook[2].condition() === true ? true : false,
-    rulebook[3].condition() === true ? true : false,
-    true,
   ];
 
-  useEffect(() => {
-    console.log(`입력감지됨 값 = ${value}`);
-  }, [value]);
+  // const showAble = () => {};
 
   return (
     <div className="App">
       <BackGround>
         <Title>🔒비밀번호 게임</Title>
         <Explanation>비밀번호를 입력해주세요</Explanation>
-        <PWinput
-          type="text"
+        <PWinput //*문제없음
           value={value}
           onChange={(e) => {
             setValue(e.target.value);
           }}
         />
-        <Container>
-          {rulebook.map((data, idx) => (
-            <Rule show={showable[idx]} ruleData={data} />
+        <Container hight={rulebook.length * 100}>
+          {rulebook.map((rule, idx) => (
+            <Rule
+              explanation={rule.RuleExplanation}
+              condition={rule.condition}
+              idx={idx}
+              show={showAble[idx]}
+            />
           ))}
         </Container>
       </BackGround>
@@ -84,8 +82,10 @@ const BackGround = styled.div`
 
 const Container = styled.div`
   width: 500px;
-  height: 100px;
+  height: ${(props) => props.hight};
   margin-top: 20px;
+  display: flex;
+  flex-flow: column-reverse;
 `;
 const Title = styled.h1`
   margin-top: 100px;

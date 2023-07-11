@@ -1,24 +1,20 @@
 import styled from "styled-components";
-import imgObj from "../data/img";
-import useBearStore from "../store";
 // import rulebook from "./data/ruleBook";
 
-const { value, setValue } = useBearStore;
-
 const Rule = (props) => {
-  const condition = props.ruleData.condition();
+  const condition = props.condition();
   return (
     <>
       <Container
         backcol={condition === true ? "#e3ffe3" : "#ffecec"}
-        outccol={condition === true ? "green" : "#d10000"}
+        outcol={condition === true ? "green" : "#d10000"}
         showable={props.show === true ? "flex" : "none"}
       >
         <Bulean backcol={condition === true ? "#aef3ae" : "#ffc7c7"}>
           <CheckIcon>{condition === true ? "✔️" : "❗"}</CheckIcon>
-          <RuleNumber>{`조건${props.ruleData.order}`}</RuleNumber>
+          <RuleNumber>{`조건${props.idx + 1}`}</RuleNumber>
         </Bulean>
-        <RuleExplanation>{props.ruleData.RuleExplanation}</RuleExplanation>
+        <RuleExplanation>{props.explanation}</RuleExplanation>
       </Container>
     </>
   );
@@ -34,6 +30,7 @@ const Container = styled.div`
   background-color: ${(props) => props.backcol};
   justify-content: start;
   display: ${(props) => props.showable};
+  /* display: flex; */
   flex-flow: wrap;
   margin-top: 20px;
   box-shadow: 4px 4px 10px 1px #b1b1b1b1;
