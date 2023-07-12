@@ -3,7 +3,6 @@ import styled from "styled-components";
 import "./App.css";
 import Rule from "./components/Rule";
 import useBearStore from "./store";
-import { useEffect, useState } from "react";
 
 function App() {
   //
@@ -36,12 +35,15 @@ function App() {
 
   const showAble = [
     true,
-    rulebook[0].condition() === true ? true : false,
-    rulebook[1].condition() === true ? true : false,
-    rulebook[2].condition() === true ? true : false,
+    rulebook[0].condition(),
+    //
+    rulebook[0].condition() && rulebook[1].condition(),
+    //
+    rulebook[0].condition() &&
+      rulebook[1].condition() &&
+      rulebook[2].condition(),
+    //
   ];
-
-  // const showAble = () => {};
 
   return (
     <div className="App">
