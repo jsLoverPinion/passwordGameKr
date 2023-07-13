@@ -3,6 +3,7 @@ import styled from "styled-components";
 import "./App.css";
 import Rule from "./components/Rule";
 import useBearStore from "./store";
+import { useEffect } from "react";
 
 function App() {
   //
@@ -46,36 +47,48 @@ function App() {
       condition: () => value.includes(`${new Date().getDate()}`),
     },
     {
-      //5
+      //6
       RuleExplanation: "비밀번호는 원소기호를 포함해야합니다.",
       condition: () => containsElementSymbol(),
     },
     {
-      //5
+      //7
       RuleExplanation: `${
-        value.includes("🥚")
-          ? "철수를 잘 부탁합니다"
-          : "🥚이건 내친구 철수입니다 입력창에 보관하세요"
+        value.includes("🥚") || value.includes("🐣")
+          ? "민수를 잘 부탁합니다"
+          : "🥚이건 내친구 민수입니다 입력창에 보관하세요"
       }`,
-      condition: () => value.includes("🥚"),
+      condition: () => value.includes("🥚") || value.includes("🐣"),
     },
     {
-      //5
+      //8
       RuleExplanation: `비밀번호는 💧 습도 30% 이상 유지해야합니다.          [현재습도:${Math.floor(
         waterDropPercent()
       )}%]`,
       condition: () => waterDropPercent() > 30,
     },
     {
-      //5
-      RuleExplanation: `비밀번호는 적당히 따듯해야합니다 [현재온도:${temp()}]`,
-      condition: () => {},
+      //9
+      RuleExplanation: `비밀번호는 적당히 🌞  따듯해야합니다 [현재온도:${temp()}°C]`,
+      condition: () => temp() === 37,
+    },
+    {
+      //10
+      RuleExplanation: `민수가 깨어났네요 미리하기 끝났습니다 감사합니다`,
+      condition: () => true,
     },
   ];
 
+  useEffect(() => {
+    if (!(value.includes("🥚") || value.includes("🐣"))) return;
+    console.log("폴 변신");
+    const openEggValue = value.replace("🥚", "🐣");
+    setValue(openEggValue);
+  }, [rulebook[9].condition()]);
+
   function temp() {
     const valArray = [...value];
-    const sunArray = valArray.filter((txt) => txt === "💧");
+    const sunArray = valArray.filter((txt) => txt === "🌞");
     return sunArray.length;
   }
 
@@ -219,6 +232,7 @@ function App() {
   return (
     <div className="App">
       <BackGround>
+        <Header>원작게임 https://neal.fun/password-game/</Header>
         <Title>🔒비밀번호 게임</Title>
         <Explanation>비밀번호를 입력해주세요</Explanation>
         <PWinput //*문제없음
@@ -270,7 +284,7 @@ const Title = styled.h1`
 
 const Explanation = styled.p`
   margin: 10px;
-  color: #b1b1b1b1;
+  color: black;
 `;
 
 const PWinput = styled.textarea`
@@ -280,4 +294,13 @@ const PWinput = styled.textarea`
   font-size: 30px;
   padding: 10px;
   word-break: all;
+`;
+
+const Header = styled.p`
+  width: 100%;
+  height: 3px; /* footer의 높이 */
+  position: absolute;
+  bottom: 100;
+  left: 0;
+  color: #b1b1b1b1;
 `;
