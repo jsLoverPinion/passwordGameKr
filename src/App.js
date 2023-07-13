@@ -244,6 +244,7 @@ function App() {
             fontSize: "30px",
             padding: "10px",
             borderRadius: "10px",
+            resize: "none",
           }} //*문제없음
           spellcheck="false"
           value={value}
@@ -251,7 +252,6 @@ function App() {
             PwOnChange(e);
           }}
         />
-        <Explanation>우측하단드래그로 크기조절가능</Explanation>
         <Container hight={rulebook.length * 100}>
           {rulebook.map((rule, idx) => (
             <Rule
