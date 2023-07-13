@@ -4,6 +4,7 @@ import "./App.css";
 import Rule from "./components/Rule";
 import useBearStore from "./store";
 import { useEffect } from "react";
+import TextareaAutosize from "react-textarea-autosize";
 
 function App() {
   //
@@ -104,6 +105,7 @@ function App() {
 
   const PwOnChange = (e) => {
     setValue(e.target.value);
+
     // localStorage.setItem("PWinput", value);
   };
 
@@ -235,7 +237,14 @@ function App() {
         <Header>원작게임 https://neal.fun/password-game/</Header>
         <Title>🔒비밀번호 게임</Title>
         <Explanation>비밀번호를 입력해주세요</Explanation>
-        <PWinput //*문제없음
+        <TextareaAutosize
+          style={{
+            width: "480px",
+            overflow: "hidden",
+            fontSize: "30px",
+            padding: "10px",
+            borderRadius: "10px",
+          }} //*문제없음
           spellcheck="false"
           value={value}
           onChange={(e) => {
@@ -294,6 +303,9 @@ const PWinput = styled.textarea`
   font-size: 30px;
   padding: 10px;
   word-break: all;
+  overflow: hidden;
+  resize: none;
+  box-sizing: border-box;
 `;
 
 const Header = styled.p`
