@@ -7,7 +7,7 @@ import useBearStore from "./store";
 function App() {
   //
   const { value, setValue } = useBearStore();
-
+  // setValue(localStorage.getItem("PWinput"));
   const rulebook = [
     {
       //0
@@ -26,18 +26,60 @@ function App() {
     },
     {
       //3
-      RuleExplanation: `비밀번호의 숫자의 합은 ${12}여야합니다`,
+      RuleExplanation: `비밀번호의 숫자의 합은 ${12}이상여야합니다`,
       condition: () =>
         Array.from(value.matchAll(/\d/g)).reduce(
           (acc, match) => acc + Number(match[0]),
           0
-        ) === 12
+        ) >= 12
           ? true
           : false,
     },
+    {
+      //4
+      RuleExplanation: "비밀번호는 ✔️ 을 포함해야합니다.",
+      condition: () => value.includes("✔️"),
+    },
+    {
+      //5
+      RuleExplanation: "비밀번호는 현재 날자를 포함해야합니다.",
+      condition: () => value.includes(`${new Date().getDate()}`),
+    },
+    {
+      //5
+      RuleExplanation: "비밀번호는 원소기호를 포함해야합니다.",
+      condition: () => containsElementSymbol(),
+    },
+    {
+      //5
+      RuleExplanation: `${
+        value.includes("🥚")
+          ? "철수를 잘 부탁합니다"
+          : "🥚이건 내친구 철수입니다 입력창에 보관하세요"
+      }`,
+      condition: () => value.includes("🥚"),
+    },
+    {
+      //5
+      RuleExplanation: `비밀번호는 💧 습도 30% 이상 유지해야합니다.          [현재습도:${Math.floor(
+        waterDropPercent()
+      )}%]`,
+      condition: () => waterDropPercent() > 30,
+    },
+    {
+      //5
+      RuleExplanation: `비밀번호는 적당히 따듯해야합니다 [현재온도:${temp()}]`,
+      condition: () => {},
+    },
   ];
 
-  const showAble2 = () => {
+  function temp() {
+    const valArray = [...value];
+    const sunArray = valArray.filter((txt) => txt === "💧");
+    return sunArray.length;
+  }
+
+  const showAble = () => {
     let array = [true];
     let result = true;
     for (let i = 0; i <= rulebook.length - 2; i++) {
@@ -47,19 +89,132 @@ function App() {
     return array;
   };
 
-  // const showAble = [
-  //   //0
-  //   true,
-  //   //1
-  //   true && rulebook[0].condition(),
-  //   //2
-  //   true && rulebook[0].condition() && rulebook[1].condition(),
-  //   //3
-  //   true &&
-  //     rulebook[0].condition() &&
-  //     rulebook[1].condition() &&
-  //     rulebook[2].condition(),
-  // ];
+  const PwOnChange = (e) => {
+    setValue(e.target.value);
+    // localStorage.setItem("PWinput", value);
+  };
+
+  const elementSymbols = [
+    "H",
+    "He",
+    "Li",
+    "Be",
+    "B",
+    "C",
+    "N",
+    "O",
+    "F",
+    "Ne",
+    "Na",
+    "Mg",
+    "Al",
+    "Si",
+    "P",
+    "S",
+    "Cl",
+    "Ar",
+    "K",
+    "Ca",
+    "Sc",
+    "Ti",
+    "V",
+    "Cr",
+    "Mn",
+    "Fe",
+    "Co",
+    "Ni",
+    "Cu",
+    "Z",
+    "Ga",
+    "Ge",
+    "As",
+    "Se",
+    "Br",
+    "Kr",
+    "Rb",
+    "Sr",
+    "Y",
+    "Zr",
+    "Nb",
+    "Mo",
+    "Tc",
+    "Ru",
+    "Pd",
+    "Ag",
+    "Cd",
+    "In",
+    "Sn",
+    "Sb",
+    "Te",
+    "I",
+    "Xe",
+    "Cs",
+    "Ba",
+    "La",
+    "Ce",
+    "Pr",
+    "Nd",
+    "Pm",
+    "Sm",
+    "Eu",
+    "Gd",
+    "Tb",
+    "Dy",
+    "Ho",
+    "Er",
+    "T",
+    "Yb",
+    "Lu",
+    "Hf",
+    "Ta",
+    "W",
+    "Re",
+    "Os",
+    "Ir",
+    "Pt",
+    "Hg",
+    "Tl",
+    "Pb",
+    "Bi",
+    "Th",
+    "Pa",
+    "U",
+    "Np",
+    "Pu",
+    "Am",
+    "Cm",
+    "Bk",
+    "Cf",
+    "Es",
+    "Fm",
+    "Md",
+    "No",
+    "Lr",
+    "Rf",
+    "Db",
+    "Sg",
+    "Bh",
+    "Hs",
+    "Mt",
+    "Ds",
+    "Rg",
+    "Cn",
+    "Nh",
+    "Fl",
+    "Mc",
+    "Lv",
+    "Ts",
+    "Og",
+  ];
+
+  const containsElementSymbol = () =>
+    elementSymbols.some((symbol) => value.includes(symbol));
+
+  function waterDropPercent() {
+    const txtToArray = [...value];
+    const waterDrops = txtToArray.filter((txt) => txt === "💧");
+    return (100 / txtToArray.length) * waterDrops.length;
+  }
 
   return (
     <div className="App">
@@ -67,11 +222,13 @@ function App() {
         <Title>🔒비밀번호 게임</Title>
         <Explanation>비밀번호를 입력해주세요</Explanation>
         <PWinput //*문제없음
+          spellcheck="false"
           value={value}
           onChange={(e) => {
-            setValue(e.target.value);
+            PwOnChange(e);
           }}
         />
+        <Explanation>우측하단드래그로 크기조절가능</Explanation>
         <Container hight={rulebook.length * 100}>
           {rulebook.map((rule, idx) => (
             <Rule
@@ -79,7 +236,7 @@ function App() {
               condition={rule.condition}
               idx={idx}
               // show={showAble[idx]}
-              show={showAble2()[idx]}
+              show={showAble()[idx]}
             />
           ))}
         </Container>
