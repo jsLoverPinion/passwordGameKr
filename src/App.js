@@ -1,4 +1,4 @@
-import "normalize.css";
+// import "normalize.css";
 import styled from "styled-components";
 import "./App.css";
 import Rule from "./components/Rule";
@@ -25,6 +25,11 @@ function App() {
       //2
       RuleExplanation: "비밀번호는 특수기호를 포함해야합니다.",
       condition: () => (/[\W_]/.test(value) ? true : false),
+    },
+    {
+      //2
+      RuleExplanation: "비밀번호는 대문자를 포함해야합니다.",
+      condition: () => upuerCase(),
     },
     {
       //3
@@ -75,17 +80,24 @@ function App() {
     },
     {
       //10
-      RuleExplanation: `민수가 깨어났네요 미리하기 끝났습니다 감사합니다`,
-      condition: () => true,
+      RuleExplanation: `비밀번호는 민수의 식사인 애벌래를 포함해야합니다`,
+      condition: () => false,
     },
   ];
 
+  function upuerCase() {
+    const valArray = [...value];
+    const upperValArray = valArray.filter((txt) => txt >= "A" && txt <= "X");
+    return upperValArray.length > 0;
+  }
+
   useEffect(() => {
-    if (!(value.includes("🥚") || value.includes("🐣"))) return;
-    console.log("폴 변신");
-    const openEggValue = value.replace("🥚", "🐣");
-    setValue(openEggValue);
-  }, [rulebook[9].condition()]);
+    if (!value.includes("🥚")) return;
+    if (rulebook[10].condition()) {
+      console.log("민수 변신");
+      setValue(value.replace("🥚", "🐣"));
+    }
+  }, [rulebook[10].condition()]);
 
   function temp() {
     const valArray = [...value];
@@ -105,8 +117,6 @@ function App() {
 
   const PwOnChange = (e) => {
     setValue(e.target.value);
-
-    // localStorage.setItem("PWinput", value);
   };
 
   const elementSymbols = [
@@ -245,7 +255,7 @@ function App() {
             padding: "10px",
             borderRadius: "10px",
             resize: "none",
-          }} //*문제없음
+          }}
           spellcheck="false"
           value={value}
           onChange={(e) => {
@@ -271,7 +281,7 @@ function App() {
 export default App;
 
 const BackGround = styled.div`
-  width: 100vw;
+  width: 100%;
   height: 300vh;
   background-color: #fffae9;
   display: flex;
@@ -280,6 +290,9 @@ const BackGround = styled.div`
 `;
 
 const Container = styled.div`
+  @media screen and (max-width: 600px) {
+    width: 100vw;
+  }
   width: 500px;
   height: ${(props) => props.hight};
   margin-top: 20px;

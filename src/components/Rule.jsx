@@ -23,6 +23,7 @@ const Rule = (props) => {
 export default Rule;
 
 const Container = styled.div`
+  transition-duration: 0.5s;
   width: 100%;
   height: 80px;
   border-radius: 7px;
@@ -37,6 +38,7 @@ const Container = styled.div`
 `;
 
 const Bulean = styled.div`
+  transition-duration: 0.5s;
   width: 100%;
   height: 40%;
   background-color: ${(props) => props.backcol};
