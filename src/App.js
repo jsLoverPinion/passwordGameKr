@@ -85,6 +85,8 @@ function App() {
     },
   ];
 
+  function minsuLunch(params) {}
+
   function upuerCase() {
     const valArray = [...value];
     const upperValArray = valArray.filter((txt) => txt >= "A" && txt <= "X");
