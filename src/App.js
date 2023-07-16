@@ -9,7 +9,7 @@ import TextareaAutosize from "react-textarea-autosize";
 function App() {
   //
   const { value, setValue } = useBearStore();
-  // setValue(localStorage.getItem("PWinput"));
+
   const rulebook = [
     {
       //0
@@ -27,12 +27,12 @@ function App() {
       condition: () => (/[\W_]/.test(value) ? true : false),
     },
     {
-      //2
+      //3
       RuleExplanation: "비밀번호는 대문자를 포함해야합니다.",
       condition: () => upuerCase(),
     },
     {
-      //3
+      //4
       RuleExplanation: `비밀번호의 숫자의 합은 ${12}이상여야합니다`,
       condition: () =>
         Array.from(value.matchAll(/\d/g)).reduce(
@@ -43,22 +43,22 @@ function App() {
           : false,
     },
     {
-      //4
+      //5
       RuleExplanation: "비밀번호는 ✔️ 을 포함해야합니다.",
       condition: () => value.includes("✔️"),
     },
     {
-      //5
+      //6
       RuleExplanation: "비밀번호는 현재 날자를 포함해야합니다.",
       condition: () => value.includes(`${new Date().getDate()}`),
     },
     {
-      //6
+      //7
       RuleExplanation: "비밀번호는 원소기호를 포함해야합니다.",
       condition: () => containsElementSymbol(),
     },
     {
-      //7
+      //8
       RuleExplanation: `${
         value.includes("🥚") || value.includes("🐣")
           ? "민수를 잘 부탁합니다"
@@ -67,25 +67,53 @@ function App() {
       condition: () => value.includes("🥚") || value.includes("🐣"),
     },
     {
-      //8
+      //9
       RuleExplanation: `비밀번호는 💧 습도 30% 이상 유지해야합니다.          [현재습도:${Math.floor(
         waterDropPercent()
       )}%]`,
       condition: () => waterDropPercent() > 30,
     },
     {
-      //9
+      //10
       RuleExplanation: `비밀번호는 적당히 🌞  따듯해야합니다 [현재온도:${temp()}°C]`,
       condition: () => temp() === 37,
     },
     {
-      //10
-      RuleExplanation: `비밀번호는 민수의 식사인 애벌래를 포함해야합니다`,
-      condition: () => false,
+      //11
+      RuleExplanation: `${
+        value.includes("🐛") && !minsuLunch()
+          ? "애벌래가 민수로부터 너무 멉니다."
+          : "비밀번호는 부화한 민수의 식사인 애벌래를 포함해야합니다."
+      }`,
+      condition: () => minsuLunch(),
+    },
+    {
+      //12
+      RuleExplanation: `민수를 재우기 위해 페이지를 새로고침하십시오`,
+      condition: () => {},
     },
   ];
 
-  function minsuLunch(params) {}
+  useEffect(() => {
+    console.log("밸류 로드됨");
+    if (typeof localStorage.getItem("input") === "string") {
+      setValue(localStorage.getItem("input"));
+    }
+  }, []);
+
+  function minsuLunch() {
+    const valArray = [...value];
+    let result = false;
+    valArray.forEach((txt, idx) => {
+      if (
+        valArray[idx] === "🐣" &&
+        (valArray[idx - 1] === "🐛" || valArray[idx + 1] === "🐛")
+      ) {
+        result = true;
+      }
+    });
+    return result;
+  }
 
   function upuerCase() {
     const valArray = [...value];
@@ -119,6 +147,7 @@ function App() {
 
   const PwOnChange = (e) => {
     setValue(e.target.value);
+    localStorage.setItem("Input", e.target.value);
   };
 
   const elementSymbols = [
@@ -234,8 +263,11 @@ function App() {
     "Og",
   ];
 
-  const containsElementSymbol = () =>
+  if (typeof value !== "string") return;
+
+  const containsElementSymbol = () => {
     elementSymbols.some((symbol) => value.includes(symbol));
+  };
 
   function waterDropPercent() {
     const txtToArray = [...value];
@@ -280,6 +312,8 @@ function App() {
   );
 }
 
+// setValue(localStorage.getItem("PWinput"));
+
 export default App;
 
 const BackGround = styled.div`
@@ -311,17 +345,17 @@ const Explanation = styled.p`
   color: black;
 `;
 
-const PWinput = styled.textarea`
-  width: 500px;
-  outline: 1px solid black;
-  border-radius: 7px;
-  font-size: 30px;
-  padding: 10px;
-  word-break: all;
-  overflow: hidden;
-  resize: none;
-  box-sizing: border-box;
-`;
+// const PWinput = styled.textarea`
+//   width: 500px;
+//   outline: 1px solid black;
+//   border-radius: 7px;
+//   font-size: 30px;
+//   padding: 10px;
+//   word-break: all;
+//   overflow: hidden;
+//   resize: none;
+//   box-sizing: border-box;
+// `;
 
 const Header = styled.p`
   width: 100%;
