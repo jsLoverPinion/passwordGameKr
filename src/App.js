@@ -9,7 +9,6 @@ import TextareaAutosize from "react-textarea-autosize";
 function App() {
   //
   const { value, setValue } = useBearStore();
-
   const rulebook = [
     {
       //0
@@ -64,7 +63,8 @@ function App() {
           ? "민수를 잘 부탁합니다"
           : "🥚이건 내친구 민수입니다 입력창에 보관하세요"
       }`,
-      condition: () => value.includes("🥚") || value.includes("🐣"),
+      condition: () =>
+        value.includes("🥚") || value.includes("🐣") || value.includes("🐤"),
     },
     {
       //9
@@ -82,36 +82,56 @@ function App() {
       //11
       RuleExplanation: `${
         value.includes("🐛") && !minsuLunch()
-          ? "애벌래가 민수로부터 너무 멉니다."
-          : "비밀번호는 부화한 민수의 식사인 애벌래를 포함해야합니다."
+          ? "민수가 🐛재민이를 먹을 수 있게 가까이 옮겨주세요"
+          : "비밀번호는 부화한 민수의 식사인 🐛재민이를 포함해야합니다."
       }`,
       condition: () => minsuLunch(),
     },
     {
       //12
-      RuleExplanation: `민수를 재우기 위해 페이지를 새로고침하십시오`,
-      condition: () => {},
+      RuleExplanation: `민수가 알에서 나오는것을 도와주기위해 F5를 눌러주세요`,
+      condition: () =>
+        localStorage.getItem("reload") === "true" || value.includes("🐤")
+          ? true
+          : false,
     },
+    {
+      //13
+      RuleExplanation: `비밀번호는 모스부호 [ -- .. -. ... ..- ] 의 뜻을 포함해야합니다`,
+      condition: () => value.includes("MINSU"),
+    },
+    // {
+    //   //14
+    //   RuleExplanation: `비밀번호는 해당 모스부호의 값이 포함되어야합니다.
+    //   [ ._...___..- ]`,
+    //   condition: () => false,
+    // },
   ];
 
   useEffect(() => {
-    console.log("밸류 로드됨");
-    if (typeof localStorage.getItem("input") === "string") {
-      setValue(localStorage.getItem("input"));
+    setValue(value.replace("🐣", "🐤"));
+  }, [rulebook[12].condition()]);
+
+  useEffect(() => {
+    console.log(`밸류 로드됨 value = ${localStorage.getItem("Input")}`);
+    if (typeof localStorage.getItem("Input") === "string") {
+      if (localStorage.getItem("Input").includes("🌞"))
+        localStorage.setItem("reload", true);
+      setValue(localStorage.getItem("Input"));
     }
   }, []);
 
   function minsuLunch() {
     const valArray = [...value];
     let result = false;
-    valArray.forEach((txt, idx) => {
-      if (
-        valArray[idx] === "🐣" &&
-        (valArray[idx - 1] === "🐛" || valArray[idx + 1] === "🐛")
-      ) {
-        result = true;
+    valArray.forEach((ele, idx) => {
+      if (ele === "🐣" || ele === "🐤") {
+        if (valArray[idx + 1] === "🐛" || valArray[idx - 1] === "🐛") {
+          result = true;
+        }
       }
     });
+
     return result;
   }
 
@@ -148,6 +168,9 @@ function App() {
   const PwOnChange = (e) => {
     setValue(e.target.value);
     localStorage.setItem("Input", e.target.value);
+    if (!rulebook[11].condition()) {
+      localStorage.setItem("reload", false);
+    }
   };
 
   const elementSymbols = [
@@ -265,9 +288,8 @@ function App() {
 
   if (typeof value !== "string") return;
 
-  const containsElementSymbol = () => {
+  const containsElementSymbol = () =>
     elementSymbols.some((symbol) => value.includes(symbol));
-  };
 
   function waterDropPercent() {
     const txtToArray = [...value];
@@ -312,8 +334,6 @@ function App() {
   );
 }
 
-// setValue(localStorage.getItem("PWinput"));
-
 export default App;
 
 const BackGround = styled.div`
@@ -344,18 +364,6 @@ const Explanation = styled.p`
   margin: 10px;
   color: black;
 `;
-
-// const PWinput = styled.textarea`
-//   width: 500px;
-//   outline: 1px solid black;
-//   border-radius: 7px;
-//   font-size: 30px;
-//   padding: 10px;
-//   word-break: all;
-//   overflow: hidden;
-//   resize: none;
-//   box-sizing: border-box;
-// `;
 
 const Header = styled.p`
   width: 100%;
