@@ -1,7 +1,6 @@
-// import "normalize.css";
+import "normalize.css";
 import styled from "styled-components";
 import "./App.css";
-import Rule from "./components/Rule";
 import useBearStore from "./store";
 import { useEffect } from "react";
 import TextareaAutosize from "react-textarea-autosize";
@@ -100,12 +99,16 @@ function App() {
       RuleExplanation: `비밀번호는 모스부호 [ -- .. -. ... ..- ] 의 뜻을 포함해야합니다`,
       condition: () => value.includes("MINSU"),
     },
-    // {
-    //   //14
-    //   RuleExplanation: `비밀번호는 해당 모스부호의 값이 포함되어야합니다.
-    //   [ ._...___..- ]`,
-    //   condition: () => false,
-    // },
+    {
+      //14
+      RuleExplanation: `https://youtu.be/zFYT-mKfuds`,
+      condition: () => value.includes("🍗"),
+    },
+    {
+      //15
+      RuleExplanation: `비밀번호는 부산 지하철도3호선의 상징색RGB를 포함해야합니다`,
+      condition: () => value.includes("#BB8C00"),
+    },
   ];
 
   useEffect(() => {
@@ -116,7 +119,7 @@ function App() {
     console.log(`밸류 로드됨 value = ${localStorage.getItem("Input")}`);
     if (typeof localStorage.getItem("Input") === "string") {
       if (localStorage.getItem("Input").includes("🌞"))
-        localStorage.setItem("reload", true);
+        localStorage.setItem("reload", 'true');
       setValue(localStorage.getItem("Input"));
     }
   }, []);
@@ -169,7 +172,7 @@ function App() {
     setValue(e.target.value);
     localStorage.setItem("Input", e.target.value);
     if (!rulebook[11].condition()) {
-      localStorage.setItem("reload", false);
+      localStorage.setItem("reload", 'false');
     }
   };
 

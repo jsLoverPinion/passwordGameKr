@@ -25,7 +25,7 @@ export default Rule;
 const Container = styled.div`
   transition-duration: 0.5s;
   width: 100%;
-  height: 80px;
+  height: auto;
   border-radius: 7px;
   outline: ${(props) => props.outccol} 1px solid;
   background-color: ${(props) => props.backcol};
