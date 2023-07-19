@@ -6,9 +6,15 @@ import { useEffect } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 
 function App() {
+  interface Rule {
+    RuleExplanation: String;
+    condition: Function;
+  }
+
   //
   const { value, setValue } = useBearStore();
-  const rulebook = [
+
+  const rulebook: Rule[] = [
     {
       //0
       RuleExplanation: "비밀번호는 8글자 이상이여야합니다.",
@@ -119,7 +125,7 @@ function App() {
     console.log(`밸류 로드됨 value = ${localStorage.getItem("Input")}`);
     if (typeof localStorage.getItem("Input") === "string") {
       if (localStorage.getItem("Input").includes("🌞"))
-        localStorage.setItem("reload", 'true');
+        localStorage.setItem("reload", "true");
       setValue(localStorage.getItem("Input"));
     }
   }, []);
@@ -172,7 +178,7 @@ function App() {
     setValue(e.target.value);
     localStorage.setItem("Input", e.target.value);
     if (!rulebook[11].condition()) {
-      localStorage.setItem("reload", 'false');
+      localStorage.setItem("reload", "false");
     }
   };
 
@@ -304,7 +310,7 @@ function App() {
     <div className="App">
       <BackGround>
         <Header>원작게임 https://neal.fun/password-game/</Header>
-        <Title>🔒비밀번호 게임</Title>
+        <Title>{`🔒비밀번호 게임`}</Title>
         <Explanation>비밀번호를 입력해주세요</Explanation>
         <TextareaAutosize
           style={{
