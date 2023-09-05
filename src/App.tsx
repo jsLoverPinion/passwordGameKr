@@ -4,19 +4,39 @@ import "./App.css";
 import useBearStore from "./store";
 import { useEffect } from "react";
 import TextareaAutosize from "react-textarea-autosize";
+import Rule from "./components/Rule";
 
 function App() {
   interface Rule {
     RuleExplanation: String;
-    condition: Function;
+    condition(): Boolean;
   }
+
+  const valArray = (): string[] => {
+    let result = [];
+    for (let i = 0; i < value.length - 1; i++) {
+      result.push(value.charAt(i));
+    }
+    return result;
+  };
+
+  // class RuleMake {
+  //   constructor(a: String, b: Function) {
+  //     RuleExplanation: a;
+  //     condition: b;
+  //   }
+  // }
 
   //
   const { value, setValue } = useBearStore();
 
-  const rulebook: Rule[] = [
+  const rulebook = [
+    // new RuleMake(
+    //   "비밀번호는 8글자 이상이여야합니다.",
+    //   (): Boolean => (value.length >= 8 ? true : false)
+    // ),
     {
-      //0
+      //   //0
       RuleExplanation: "비밀번호는 8글자 이상이여야합니다.",
       condition: () => (value.length >= 8 ? true : false),
     },
@@ -62,7 +82,6 @@ function App() {
       condition: () => containsElementSymbol(),
     },
     {
-      //8
       RuleExplanation: `${
         value.includes("🥚") || value.includes("🐣")
           ? "민수를 잘 부탁합니다"
@@ -73,9 +92,7 @@ function App() {
     },
     {
       //9
-      RuleExplanation: `비밀번호는 💧 습도 30% 이상 유지해야합니다.          [현재습도:${Math.floor(
-        waterDropPercent()
-      )}%]`,
+      RuleExplanation: `비밀번호는 💧 습도 30% 이상 유지해야합니다.      --------    [현재습도:${~~waterDropPercent()}%]`,
       condition: () => waterDropPercent() > 30,
     },
     {
@@ -130,10 +147,10 @@ function App() {
     }
   }, []);
 
+  //
   function minsuLunch() {
-    const valArray = [...value];
     let result = false;
-    valArray.forEach((ele, idx) => {
+    valArray().forEach((ele, idx) => {
       if (ele === "🐣" || ele === "🐤") {
         if (valArray[idx + 1] === "🐛" || valArray[idx - 1] === "🐛") {
           result = true;
@@ -145,8 +162,7 @@ function App() {
   }
 
   function upuerCase() {
-    const valArray = [...value];
-    const upperValArray = valArray.filter((txt) => txt >= "A" && txt <= "X");
+    const upperValArray = valArray().filter((txt) => txt >= "A" && txt <= "X");
     return upperValArray.length > 0;
   }
 
@@ -159,8 +175,7 @@ function App() {
   }, [rulebook[10].condition()]);
 
   function temp() {
-    const valArray = [...value];
-    const sunArray = valArray.filter((txt) => txt === "🌞");
+    const sunArray = valArray().filter((txt) => txt === "🌞");
     return sunArray.length;
   }
 
@@ -301,9 +316,8 @@ function App() {
     elementSymbols.some((symbol) => value.includes(symbol));
 
   function waterDropPercent() {
-    const txtToArray = [...value];
-    const waterDrops = txtToArray.filter((txt) => txt === "💧");
-    return (100 / txtToArray.length) * waterDrops.length;
+    const waterDrops = valArray().filter((i) => i === "💧");
+    return (100 / valArray().length) * waterDrops.length;
   }
 
   return (
@@ -321,7 +335,7 @@ function App() {
             borderRadius: "10px",
             resize: "none",
           }}
-          spellcheck="false"
+          // spellcheck="false"
           value={value}
           onChange={(e) => {
             PwOnChange(e);
@@ -354,7 +368,11 @@ const BackGround = styled.div`
   flex-flow: column;
 `;
 
-const Container = styled.div`
+interface ContainerProps {
+  hight: number;
+}
+
+const Container = styled.div<ContainerProps>`
   @media screen and (max-width: 600px) {
     width: 100vw;
   }

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 // import rulebook from "./data/ruleBook";
 
 const Rule = (props) => {
@@ -22,22 +22,28 @@ const Rule = (props) => {
 
 export default Rule;
 
-const Container = styled.div`
+interface PropsOutline {
+  backcol?: string;
+  outcol?: string;
+  showable?: string;
+}
+
+const Container = styled.div<PropsOutline>`
   transition-duration: 0.5s;
   width: 100%;
   height: auto;
   border-radius: 7px;
-  outline: ${(props) => props.outccol} 1px solid;
-  background-color: ${(props) => props.backcol};
   justify-content: start;
-  display: ${(props) => props.showable};
-  /* display: flex; */
+  display: flex;
   flex-flow: wrap;
   margin-top: 20px;
   box-shadow: 4px 4px 10px 1px #b1b1b1b1;
+  background-color: ${(props) => props.backcol};
+  outline: 1px solid ${(props) => props.outcol};
+  display: ${(props) => props.showable};
 `;
 
-const Bulean = styled.div`
+const Bulean = styled.div<PropsOutline>`
   transition-duration: 0.5s;
   width: 100%;
   height: 40%;

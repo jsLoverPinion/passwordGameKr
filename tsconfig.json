@@ -6,7 +6,8 @@
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "lib": ["ES2015", "DOM", "DOM.Iterable"]
+    "lib": ["ES2015", "DOM", "DOM.Iterable"],
+    "jsx": "preserve" /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */
   },
   "include": ["./src/**/*"],
   "exclude": ["node_modules", "dist"]
