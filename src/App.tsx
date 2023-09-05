@@ -2,23 +2,42 @@ import "normalize.css";
 import styled from "styled-components";
 import "./App.css";
 import useBearStore from "./store";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import Rule from "./components/Rule";
 
 function App() {
-  interface Rule {
-    RuleExplanation: String;
-    condition(): Boolean;
-  }
+  const { value, setValue } = useBearStore();
+  const [valArrayState, setValArrayState] = useState<any[]>();
 
-  const valArray = (): string[] => {
+  function valArray(): Array<string> {
+    return value.split("");
     let result = [];
-    for (let i = 0; i < value.length - 1; i++) {
+    for (let i; i < value.length; i++) {
       result.push(value.charAt(i));
     }
-    return result;
-  };
+    // return result;
+  }
+
+  useEffect(() => {
+    console.log(`밸류 로드됨 value = ${localStorage.getItem("Input")}`);
+    if (typeof localStorage.getItem("Input") === "string") {
+      if (localStorage.getItem("Input").includes("🌞"))
+        localStorage.setItem("reload", "true");
+      setValue(localStorage.getItem("Input"));
+      setValArrayState(valArray);
+    }
+  }, []);
+
+  // interface Rule {
+  //   RuleExplanation: String;
+  //   condition(): Boolean;
+  // }
+
+  // const valArray = (): Array<any> => {
+  //   let result = value.split("");
+  //   return result;
+  // };
 
   // class RuleMake {
   //   constructor(a: String, b: Function) {
@@ -28,7 +47,6 @@ function App() {
   // }
 
   //
-  const { value, setValue } = useBearStore();
 
   const rulebook = [
     // new RuleMake(
@@ -92,18 +110,19 @@ function App() {
     },
     {
       //9
-      RuleExplanation: `비밀번호는 💧 습도 30% 이상 유지해야합니다.      --------    [현재습도:${~~waterDropPercent()}%]`,
+      RuleExplanation: `비밀번호는 💧 습도 30% 이상 유지해야합니다.  ㅤㅤ   [현재습도:${~~waterDropPercent()}%]`,
       condition: () => waterDropPercent() > 30,
     },
     {
       //10
-      RuleExplanation: `비밀번호는 적당히 🌞  따듯해야합니다 [현재온도:${temp()}°C]`,
-      condition: () => temp() === 37,
+      RuleExplanation: `비밀번호는 적당히 🌞  따듯해야합니다 ㅤㅤㅤㅤㅤ [현재온도:${temp()}°C]`,
+      condition: () => temp() > 35 && temp() < 40,
     },
     {
       //11
       RuleExplanation: `${
-        value.includes("🐛") && !minsuLunch()
+        valArray().includes("\uD83D") ||
+        (valArray().includes("\uDC1B") && !minsuLunch())
           ? "민수가 🐛재민이를 먹을 수 있게 가까이 옮겨주세요"
           : "비밀번호는 부화한 민수의 식사인 🐛재민이를 포함해야합니다."
       }`,
@@ -138,15 +157,6 @@ function App() {
     setValue(value.replace("🐣", "🐤"));
   }, [rulebook[12].condition()]);
 
-  useEffect(() => {
-    console.log(`밸류 로드됨 value = ${localStorage.getItem("Input")}`);
-    if (typeof localStorage.getItem("Input") === "string") {
-      if (localStorage.getItem("Input").includes("🌞"))
-        localStorage.setItem("reload", "true");
-      setValue(localStorage.getItem("Input"));
-    }
-  }, []);
-
   //
   function minsuLunch() {
     let result = false;
@@ -175,7 +185,9 @@ function App() {
   }, [rulebook[10].condition()]);
 
   function temp() {
-    const sunArray = valArray().filter((txt) => txt === "🌞");
+    const sunArray = valArray().filter(
+      (txt) => txt === "\uDF1E" || txt === "\uD83C"
+    );
     return sunArray.length;
   }
 
@@ -190,6 +202,8 @@ function App() {
   };
 
   const PwOnChange = (e) => {
+    console.log(valArray());
+
     setValue(e.target.value);
     localStorage.setItem("Input", e.target.value);
     if (!rulebook[11].condition()) {
@@ -316,7 +330,9 @@ function App() {
     elementSymbols.some((symbol) => value.includes(symbol));
 
   function waterDropPercent() {
-    const waterDrops = valArray().filter((i) => i === "💧");
+    const waterDrops = valArray().filter(
+      (i) => i === "\uD83D" || i === "\uDCA7"
+    );
     return (100 / valArray().length) * waterDrops.length;
   }
 
@@ -335,7 +351,7 @@ function App() {
             borderRadius: "10px",
             resize: "none",
           }}
-          // spellcheck="false"
+          spellcheck="false"
           value={value}
           onChange={(e) => {
             PwOnChange(e);
